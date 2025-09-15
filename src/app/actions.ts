@@ -5,13 +5,25 @@ import { redirect } from "next/navigation";
 import { login } from "@/lib/auth";
 import type { LoginData } from "@/types/graphql";
 
-export async function loginAction(formData: FormData) {
+export type AdminLoginResult = {
+  success: boolean;
+  message?: string;
+};
+
+export async function loginAction(
+  _prevState: AdminLoginResult | null,
+  formData: FormData,
+): Promise<AdminLoginResult> {
   const cookieStore = await cookies();
+
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
   if (!email || !password) {
-    throw new Error("Email and password are required");
+    return {
+      success: false,
+      message: "Email and password are required",
+    };
   }
 
   let loginResult: LoginData;
@@ -19,7 +31,17 @@ export async function loginAction(formData: FormData) {
     loginResult = await login(email, password);
   } catch (error) {
     console.error("Login error:", error);
-    throw new Error("Login failed: Invalid email or password");
+    return {
+      success: false,
+      message: "Login failed: Invalid email or password",
+    };
+  }
+
+  if (!loginResult) {
+    return {
+      success: false,
+      message: "Login failed: Invalid email or password",
+    };
   }
 
   const token = loginResult.user.token;

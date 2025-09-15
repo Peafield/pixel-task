@@ -1,7 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { useActionState } from "react";
 import { loginAction } from "@/app/actions";
 
 export default function Login() {
+  const [loginState, submitAction, isPending] = useActionState(
+    loginAction,
+    null,
+  );
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
@@ -10,7 +17,7 @@ export default function Login() {
           <p className="text-gray-600 mt-2">Sign in to access your tasks</p>
         </div>
 
-        <form action={loginAction} className="space-y-6">
+        <form action={submitAction} className="space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -51,8 +58,11 @@ export default function Login() {
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg font-medium transition-colors"
           >
-            Sign In
+            {isPending ? "Loading..." : "Sign In"}
           </button>
+          {loginState && !loginState?.success && (
+            <p className="text-red-500 text-sm">Invalid username or password</p>
+          )}
         </form>
 
         <div className="mt-6 text-center">

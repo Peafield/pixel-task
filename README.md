@@ -24,8 +24,8 @@ A task manager built with Next.js 15, TypeScript, and GraphQL.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Peafield/pixel-task;
-cd pixel
+git clone https://github.com/Peafield/pixel-task
+cd pixel-task
 
 2. Install dependencies:
 ```bash
